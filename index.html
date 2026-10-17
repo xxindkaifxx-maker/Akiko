@@ -300,11 +300,12 @@
       width: 100%;
       border-radius: 8px;
       overflow: hidden;
-      background: #064e3b;
+      background: #e2e8f0;
       position: relative;
       cursor: pointer;
-      min-height: 280px;
+      min-height: 320px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -340,27 +341,28 @@
       opacity: 0.85;
     }
 
-    /* Fast photo setup bar */
+    /* Direct Photo Setup */
     .photo-bar {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .photo-select-btn {
-      background: #f0fdf4;
-      border: 1px dashed #86efac;
-      color: #166534;
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 6px 14px;
+      background: #0284c7;
+      border: none;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 18px;
       border-radius: 50px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
       transition: all 0.2s ease;
     }
 
@@ -503,11 +505,11 @@
     <div id="player"></div>
   </div>
 
-  <!-- Cute Floating Music Player Indicator -->
+  <!-- Music Player Indicator -->
   <div class="music-pill-widget" id="musicBtn" onclick="toggleMusic(event)">
     <div class="vinyl-icon" id="vinylDisc">🎵</div>
     <div class="music-text-group">
-      <span class="music-title-text" id="musicTitleText">Playing at 0:30 ♫</span>
+      <span class="music-title-text" id="musicTitleText">Tap to Play Music ♫</span>
       <span class="music-sub-text">we fell in love in october • girl in red</span>
     </div>
   </div>
@@ -547,12 +549,11 @@
 
     <!-- Polaroid Card -->
     <div class="polaroid">
-      <div class="img-wrapper" onclick="triggerCelebration()">
+      <div class="img-wrapper" id="imgWrapper" onclick="triggerCelebration()">
         <img 
           id="heroPhoto" 
           src="1000148177.jpg" 
-          alt="Akiko in green dress with jhumka and bangles" 
-          onerror="handlePhotoFallback(this)"
+          alt="My Beloved Akiko" 
         />
       </div>
       <div class="caption">To my favourite person in the world ✨🤍</div>
@@ -560,7 +561,7 @@
       
       <div class="photo-bar">
         <button type="button" class="photo-select-btn" onclick="document.getElementById('photoInput').click()">
-          📷 Select Akiko's photo (1-sec fix)
+          📷 Tap here to set her photo
         </button>
       </div>
       <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="updateHeroPhoto(event)" />
@@ -601,14 +602,12 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
 
   <script>
     // ==========================================
-    // YOUTUBE API BACKGROUND MUSIC INTEGRATION
-    // Starts automatically at 0:30 (30 seconds in)
+    // YOUTUBE BACKGROUND MUSIC (Auto-start on interaction)
     // ==========================================
     let ytPlayer = null;
     let isMusicPlaying = false;
-    const START_SECONDS = 30; // Starts right at 0:30
+    const START_SECONDS = 30; // Starts at 0:30
 
-    // Load YouTube IFrame Player API
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -618,7 +617,7 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
       ytPlayer = new YT.Player('player', {
         height: '1',
         width: '1',
-        videoId: 'iggmiF7DNoM', // Official "we fell in love in october" - girl in red
+        videoId: 'iggmiF7DNoM', // "we fell in love in october" - girl in red
         playerVars: {
           autoplay: 1,
           start: START_SECONDS,
@@ -638,7 +637,7 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
     function onPlayerReady(event) {
       if (ytPlayer && ytPlayer.seekTo) {
         ytPlayer.seekTo(START_SECONDS, true);
-        ytPlayer.setVolume(35); // Gentle volume
+        ytPlayer.setVolume(35);
         ytPlayer.playVideo();
       }
     }
@@ -690,7 +689,6 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
       }
     }
 
-    // Auto-trigger music on the very first touch/scroll if browser blocked initial autoplay
     window.addEventListener('pointerdown', ensureMusicStarted, { once: true });
     window.addEventListener('touchstart', ensureMusicStarted, { once: true });
     window.addEventListener('scroll', ensureMusicStarted, { once: true });
@@ -698,17 +696,9 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
     // ==========================================
     // PERSISTENT HERO PHOTO SYSTEM
     // ==========================================
-    // Check if user already loaded her photo into local storage
     const savedPhoto = localStorage.getItem('akiko_bday_photo');
     if (savedPhoto) {
       document.getElementById('heroPhoto').src = savedPhoto;
-    }
-
-    function handlePhotoFallback(img) {
-      // If 1000148177.jpg isn't in same directory and nothing saved in storage yet:
-      if (!localStorage.getItem('akiko_bday_photo')) {
-        img.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
-      }
     }
 
     function updateHeroPhoto(event) {
@@ -718,7 +708,6 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
         reader.onload = function(e) {
           const result = e.target.result;
           document.getElementById('heroPhoto').src = result;
-          // Save permanently in phone storage so it never disappears
           try {
             localStorage.setItem('akiko_bday_photo', result);
           } catch (err) {}
@@ -728,7 +717,7 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
     }
 
     // ==========================================
-    // BULLETPROOF LETTER TOGGLE LOGIC
+    // LETTER TOGGLE
     // ==========================================
     let isLetterOpen = false;
 
@@ -799,7 +788,7 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
     }
 
     // ==========================================
-    // AESTHETIC CANVAS FIREWORKS ENGINE
+    // FIREWORKS ENGINE
     // ==========================================
     const canvas = document.getElementById('fireworksCanvas');
     const ctx = canvas.getContext('2d');
@@ -953,7 +942,6 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
     }
     animateFireworks();
 
-    // Continuous ambient fireworks launch
     setInterval(() => {
       launchFirework();
     }, 2400);
@@ -1014,13 +1002,11 @@ It incredibly the best blessing by Allah to have such a beautiful and loyal and 
       }
     }
 
-    // Tap anywhere on screen launches a firework
     window.addEventListener('pointerdown', (e) => {
       if (e.target.closest('#toggleBtn') || e.target.closest('#musicBtn') || e.target.closest('.photo-select-btn')) return;
       launchFirework(e.clientX, e.clientY);
     });
 
-    // Initial festive burst
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         launchFirework(canvas.width * 0.35, canvas.height * 0.25);
